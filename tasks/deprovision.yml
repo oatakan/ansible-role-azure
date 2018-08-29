@@ -4,3 +4,45 @@
     name: "{{ azure_resource_group_name }}"
     location: "{{ azure_location }}"
     state: absent
+
+- name: Delete Windows VM
+  azure_rm_virtualmachine:
+    resource_group: "{{ azure_resource_group_name }}"
+    name: "vm-{{ azure_prefix | lower }}-{{ item.name | lower }}"
+    state: absent
+  with_items: "{{ nodes }}"
+  when: nodes is defined
+
+- name: Delete virtual network inteface card
+  azure_rm_networkinterface:
+    resource_group: "{{ azure_resource_group_name }}"
+    name: "ni_{{ azure_prefix }}{{ item.name }}"
+    state: absent
+  with_items: "{{ nodes }}"
+  when: nodes is defined
+
+- name: Delete public IP address
+  azure_rm_publicipaddress:
+    resource_group: "{{ azure_resource_group_name }}"
+    name: "ip_{{ azure_prefix }}{{ item.name }}"
+    state: absent
+  with_items: "{{ nodes }}"
+  when: nodes is defined
+
+- name: Delete Network Security Group
+  azure_rm_securitygroup:
+    resource_group: "{{ azure_resource_group_name }}"
+    name: "{{ azure_security_group_name }}"
+    state: absent
+
+- name: Delete subnet
+  azure_rm_subnet:
+    resource_group: "{{ azure_resource_group_name }}"
+    name: "{{ azure_subnet_name }}"
+    state: absent
+
+- name: Delete virtual network
+  azure_rm_virtualnetwork:
+    resource_group: "{{ azure_resource_group_name }}"
+    name: "{{ azure_virtual_network_name }}"
+    state: absent

@@ -84,6 +84,7 @@
     admin_username: ansible
     admin_password: "{{ ansible_password }}"
     image: "{{ item.image }}"
+    remove_on_absent: all
     tags:
       name: "vm_{{ azure_prefix | lower }}{{ item.name | lower }}"
       environment: "{{ env | default('') }}"
