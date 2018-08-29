@@ -72,7 +72,7 @@
 - name: Create Windows VM
   azure_rm_virtualmachine:
     resource_group: "{{ azure_resource_group_name }}"
-    name: "vm_{{ azure_prefix | lower }}{{ item.name | lower }}"
+    name: "vm-{{ azure_prefix | lower }}-{{ item.name | lower }}"
     vm_size: "{{ item.vm_size }}"
     public_ip_allocation_method: Dynamic
     open_ports:
