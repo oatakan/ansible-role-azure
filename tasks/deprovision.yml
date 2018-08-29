@@ -1,9 +1,4 @@
 ---
-- name: Delete resource group
-  azure_rm_resourcegroup:
-    name: "{{ azure_resource_group_name }}"
-    location: "{{ azure_location }}"
-    state: absent
 
 - name: Delete Windows VM
   azure_rm_virtualmachine:
@@ -45,4 +40,10 @@
   azure_rm_virtualnetwork:
     resource_group: "{{ azure_resource_group_name }}"
     name: "{{ azure_virtual_network_name }}"
+    state: absent
+
+- name: Delete resource group
+  azure_rm_resourcegroup:
+    name: "{{ azure_resource_group_name }}"
+    location: "{{ azure_location }}"
     state: absent
