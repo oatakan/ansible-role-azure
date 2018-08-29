@@ -11,7 +11,7 @@
   azure_rm_virtualnetwork:
     resource_group: "{{ azure_resource_group_name }}"
     name: "{{ azure_virtual_network_name }}"
-    address_prefixes: "azure_virtual_network_prefixes"
+    address_prefixes: "{{ azure_virtual_network_prefixes }}"
 
 - name: Add subnet
   azure_rm_subnet:
