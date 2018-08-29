@@ -4,8 +4,12 @@
     name: "{{ azure_resource_group_name }}"
     location: "{{ azure_location }}"
     tags:
-      testing: testing
-      delete: never
+      name: "{{ azure_prefix }}-{{ item.pod_name | default('') }}-{{ item.role }}-{{ item.name }}"
+      environment: "{{ environment | default('') }}"
+      role: "{{ item.role }}"
+      app: "{{ item.app_name }}"
+      pod: "{{ item.pod_name | default('') }}"
+      user: "{{ item.username | default('') }}"
   ignore_errors: yes
 
 - name: Create virtual network
@@ -86,8 +90,12 @@
     admin_password: "{{ ansible_password }}"
     image: "{{ item.image }}"
     tags:
+      name: "{{ azure_prefix }}-{{ item.pod_name | default('') }}-{{ item.role }}-{{ item.name }}"
+      environment: "{{ environment | default('') }}"
       role: "{{ item.role }}"
-      app_name: "{{ item.app_name }}"
+      app: "{{ item.app_name }}"
+      pod: "{{ item.pod_name | default('') }}"
+      user: "{{ item.username | default('') }}"
   async: 7200
   poll: 0
   register: deploy
