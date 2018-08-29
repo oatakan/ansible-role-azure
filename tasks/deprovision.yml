@@ -59,3 +59,7 @@
     name: "{{ azure_resource_group_name }}"
     location: "{{ azure_location }}"
     state: absent
+  register: task_result
+  until: task_result is succeeded
+  retries: 10
+  delay: 5
