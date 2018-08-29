@@ -107,6 +107,17 @@
   delay: 10
   with_items: "{{ deploy.results }}"
 
+- name: Delete VM Extension
+  azure_rm_virtualmachine_extension:
+    name: "ve_{{ azure_prefix }}_{{ item.0 }}"
+    resource_group: "{{ azure_resource_group_name }}"
+    virtual_machine_name: "{{ item.1.ansible_facts.azure_vm.name }}"
+    state: absent
+  with_indexed_items: "{{ instances.results }}"
+  when:
+  - instances.results is defined
+  - nodes is defined
+
 - name: Create VM Extension
   azure_rm_virtualmachine_extension:
     name: "ve_{{ azure_prefix }}_{{ item.0 }}"
@@ -120,7 +131,7 @@
     auto_upgrade_minor_version: true
   with_indexed_items: "{{ instances.results }}"
   when:
-  - instances is changed
+  - instances.results is defined
   - nodes is defined
 
 - name: Waiting for server to come online
@@ -130,7 +141,7 @@
     timeout: "{{ instance_wait_connection_timeout }}"
   with_items: "{{ instances.results }}"
   when:
-    - instances is changed
+    - instances.results is defined
     - nodes is defined
 
 
