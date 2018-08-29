@@ -82,7 +82,7 @@
       - "{{ ansible_port }}"
     os_type: "{{ item.os_type }}"
     network_interfaces: ni_{{ azure_prefix }}{{ item.name }}
-    admin_username: ansible
+    admin_username: "{{ ansible_user }}"
     admin_password: "{{ ansible_password }}"
     image: "{{ item.image }}"
     remove_on_absent: all
@@ -114,9 +114,10 @@
     virtual_machine_name: "{{ item.1.ansible_facts.azure_vm.name }}"
     state: absent
   with_indexed_items: "{{ instances.results }}"
+  ignore_errors: yes
   when:
-  - instances.results is defined
-  - nodes is defined
+    - instances.results is defined
+    - nodes is defined
 
 - name: Create VM Extension
   azure_rm_virtualmachine_extension:
@@ -131,8 +132,8 @@
     auto_upgrade_minor_version: true
   with_indexed_items: "{{ instances.results }}"
   when:
-  - instances.results is defined
-  - nodes is defined
+    - instances.results is defined
+    - nodes is defined
 
 - name: Waiting for server to come online
   wait_for:
