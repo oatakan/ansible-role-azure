@@ -1,0 +1,14 @@
+---
+
+azure_prefix: DEMO
+azure_location: southcentralus
+azure_resource_group_name: rg_{{ azure_prefix }}
+azure_virtual_network_name: vn_{{ azure_prefix }}
+azure_subnet_name: sn_{{ azure_prefix }}
+azure_security_group_name: sg_{{ azure_prefix }}
+
+azure_virtual_network_prefixes: "10.0.0.0/16"
+azure_subnet_prefixes: "10.0.1.0/24"
+
+instance_wait_retry_limit: 300
+instance_wait_connection_timeout: 600
