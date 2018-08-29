@@ -1,5 +1,7 @@
 ---
 
+environment: test
+
 azure_prefix: DEMO
 azure_location: southcentralus
 azure_resource_group_name: rg_{{ azure_prefix }}
