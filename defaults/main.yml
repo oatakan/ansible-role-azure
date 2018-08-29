@@ -1,5 +1,7 @@
 ---
 
+role_action: provision
+
 env: test
 
 azure_prefix: DEMO
