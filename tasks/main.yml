@@ -4,7 +4,7 @@
     name: "{{ azure_resource_group_name }}"
     location: "{{ azure_location }}"
     tags:
-      environment: "{{ environment | default('') }}"
+      environment: "{{ env | default('') }}"
   ignore_errors: yes
 
 - name: Create virtual network
@@ -86,7 +86,7 @@
     image: "{{ item.image }}"
     tags:
       name: "{{ azure_prefix }}-{{ item.pod_name | default('') }}-{{ item.role }}-{{ item.name }}"
-      environment: "{{ environment | default('') }}"
+      environment: "{{ env | default('') }}"
       role: "{{ item.role }}"
       app: "{{ item.app_name }}"
       pod: "{{ item.pod_name | default('') }}"

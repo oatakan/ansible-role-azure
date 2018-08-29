@@ -1,6 +1,6 @@
 ---
 
-environment: test
+env: test
 
 azure_prefix: DEMO
 azure_location: southcentralus
