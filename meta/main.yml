@@ -1,7 +1,6 @@
 ---
 galaxy_info:
   author: Orcun Atakan
-  min_ansible_version: 1.2
   description: Ansible galaxy role for creating azure instances
   company: Red Hat
 
