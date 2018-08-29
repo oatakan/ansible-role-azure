@@ -5,8 +5,19 @@
     resource_group: "{{ azure_resource_group_name }}"
     name: "vm-{{ azure_prefix | lower }}-{{ item.name | lower }}"
     state: absent
+  async: 7200
+  poll: 0
+  register: deploy
   with_items: "{{ nodes }}"
   when: nodes is defined
+
+- name: Wait for instance deletion to complete
+  async_status: jid="{{ item.ansible_job_id }}"
+  register: instances
+  until: instances.finished
+  retries: "{{ instance_wait_retry_limit }}"
+  delay: 10
+  with_items: "{{ deploy.results }}"
 
 - name: Delete virtual network inteface card
   azure_rm_networkinterface:
@@ -34,6 +45,7 @@
   azure_rm_subnet:
     resource_group: "{{ azure_resource_group_name }}"
     name: "{{ azure_subnet_name }}"
+    virtual_network: "{{ azure_virtual_network_name }}"
     state: absent
 
 - name: Delete virtual network
