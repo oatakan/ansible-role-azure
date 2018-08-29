@@ -72,7 +72,7 @@
 - name: Create Windows VM
   azure_rm_virtualmachine:
     resource_group: "{{ azure_resource_group_name }}"
-    name: "vm_{{ azure_prefix }}{{ item.name }}"
+    name: "vm_{{ azure_prefix | lower }}{{ item.name | lower }}"
     vm_size: "{{ item.vm_size }}"
     public_ip_allocation_method: Dynamic
     open_ports:
@@ -85,7 +85,7 @@
     admin_password: "{{ ansible_password }}"
     image: "{{ item.image }}"
     tags:
-      name: "{{ azure_prefix }}-{{ item.pod_name | default('') }}-{{ item.role }}-{{ item.name }}"
+      name: "vm_{{ azure_prefix | lower }}{{ item.name | lower }}"
       environment: "{{ env | default('') }}"
       role: "{{ item.role }}"
       app: "{{ item.app_name }}"
