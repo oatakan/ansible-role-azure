@@ -110,63 +110,77 @@
   delay: 10
   with_items: "{{ deploy.results }}"
 
-- name: pause for VMs to stabilize
-  pause:
-    seconds: "{{ pause_in_seconds }}"
+#- name: pause for VMs to stabilize
+#  pause:
+#    seconds: "{{ pause_in_seconds }}"
 
-- name: Create VM Extension
-  azure_rm_virtualmachineextension:
-    name: "ve_{{ azure_prefix }}_{{ item.0 }}"
-    resource_group: "{{ azure_resource_group_name }}"
-    virtual_machine_name: "{{ item.1.ansible_facts.azure_vm.name }}"
-    publisher: Microsoft.Compute
-    virtual_machine_extension_type: CustomScriptExtension
-    type_handler_version: '1.9'
-    #settings: '{"fileUris": ["https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1"],"commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -File ConfigureRemotingForAnsible.ps1 -ForceNewSSLCert -EnableCredSSP"}'
-    settings: '{"commandToExecute": "powershell.exe -ExecutionPolicy ByPass -EncodedCommand {{ winrm_enable_script }}"}'
-    auto_upgrade_minor_version: true
-  with_indexed_items: "{{ instances.results }}"
-  when:
-    - instances.results is defined
-    - nodes is defined
+- block:
+    - name: Create VM Extension
+      azure_rm_virtualmachineextension:
+        name: "ve_{{ azure_prefix }}_{{ item.0 }}"
+        resource_group: "{{ azure_resource_group_name }}"
+        virtual_machine_name: "{{ item.1.ansible_facts.azure_vm.name }}"
+        publisher: Microsoft.Compute
+        virtual_machine_extension_type: CustomScriptExtension
+        type_handler_version: '1.9'
+        #settings: '{"fileUris": ["https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1"],"commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -File ConfigureRemotingForAnsible.ps1 -ForceNewSSLCert -EnableCredSSP"}'
+        settings: '{"commandToExecute": "powershell.exe -ExecutionPolicy ByPass -EncodedCommand {{ winrm_enable_script }}"}'
+        auto_upgrade_minor_version: true
+      with_indexed_items: "{{ instances.results }}"
+      when:
+        - instances.results is defined
+        - nodes is defined
 
-- name: Delete VM Extension
-  azure_rm_virtualmachineextension:
-    name: "ve_{{ azure_prefix }}_{{ item.0 }}"
-    resource_group: "{{ azure_resource_group_name }}"
-    virtual_machine_name: "{{ item.1.ansible_facts.azure_vm.name }}"
-    state: absent
-  with_indexed_items: "{{ instances.results }}"
-  ignore_errors: yes
-  when:
-    - instances.results is defined
-    - nodes is defined
+    - name: Waiting for server to come online
+      wait_for:
+        host: "{{ item.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}"
+        port: "{{ ansible_port }}"
+        timeout: 60
+      with_items: "{{ instances.results }}"
+      when:
+        - instances.results is defined
+        - nodes is defined
 
-- name: Create VM Extension
-  azure_rm_virtualmachineextension:
-    name: "ve_{{ azure_prefix }}_{{ item.0 }}"
-    resource_group: "{{ azure_resource_group_name }}"
-    virtual_machine_name: "{{ item.1.ansible_facts.azure_vm.name }}"
-    publisher: Microsoft.Compute
-    virtual_machine_extension_type: CustomScriptExtension
-    type_handler_version: '1.9'
-    #settings: '{"fileUris": ["https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1"],"commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -File ConfigureRemotingForAnsible.ps1 -ForceNewSSLCert -EnableCredSSP"}'
-    settings: '{"commandToExecute": "powershell.exe -ExecutionPolicy ByPass -EncodedCommand {{ winrm_enable_script }}"}'
-    auto_upgrade_minor_version: true
-  with_indexed_items: "{{ instances.results }}"
-  when:
-    - instances.results is defined
-    - nodes is defined
+  rescue:
+    - name: Delete VM Extension
+      azure_rm_virtualmachineextension:
+        name: "ve_{{ azure_prefix }}_{{ item.0 }}"
+        resource_group: "{{ azure_resource_group_name }}"
+        virtual_machine_name: "{{ item.1.ansible_facts.azure_vm.name }}"
+        state: absent
+      with_indexed_items: "{{ instances.results }}"
+      ignore_errors: yes
+      when:
+        - instances.results is defined
+        - nodes is defined
 
-- name: Waiting for server to come online
-  wait_for:
-    host: "{{ item.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}"
-    port: "{{ ansible_port }}"
-    timeout: "{{ instance_wait_connection_timeout }}"
-  with_items: "{{ instances.results }}"
-  when:
-    - instances.results is defined
-    - nodes is defined
+    - name: Create VM Extension
+      azure_rm_virtualmachineextension:
+        name: "ve_{{ azure_prefix }}_{{ item.0 }}"
+        resource_group: "{{ azure_resource_group_name }}"
+        virtual_machine_name: "{{ item.1.ansible_facts.azure_vm.name }}"
+        publisher: Microsoft.Compute
+        virtual_machine_extension_type: CustomScriptExtension
+        type_handler_version: '1.9'
+        #settings: '{"fileUris": ["https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1"],"commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -File ConfigureRemotingForAnsible.ps1 -ForceNewSSLCert -EnableCredSSP"}'
+        settings: '{"commandToExecute": "powershell.exe -ExecutionPolicy ByPass -EncodedCommand {{ winrm_enable_script }}"}'
+        auto_upgrade_minor_version: true
+      with_indexed_items: "{{ instances.results }}"
+      when:
+        - instances.results is defined
+        - nodes is defined
+
+  always:
+
+    - name: Waiting for server to come online
+      wait_for:
+        host: "{{ item.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}"
+        port: "{{ ansible_port }}"
+        timeout: "{{ instance_wait_connection_timeout }}"
+      with_items: "{{ instances.results }}"
+      when:
+        - instances.results is defined
+        - nodes is defined
 
 
 
