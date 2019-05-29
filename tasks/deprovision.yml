@@ -1,6 +1,6 @@
 ---
 
-- name: Delete Windows VM
+- name: Delete Instance
   azure_rm_virtualmachine:
     resource_group: "{{ azure_resource_group_name }}"
     name: "vm-{{ azure_prefix | lower }}-{{ item.name | lower }}"
