@@ -170,8 +170,6 @@
         - instances.results is defined
         - nodes is defined
 
-  always:
-
     - name: Waiting for server to come online
       wait_for:
         host: "{{ item.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}"
