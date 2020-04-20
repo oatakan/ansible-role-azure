@@ -7,7 +7,7 @@
     state: absent
   async: 7200
   poll: 0
-  register: deploy
+  register: undeploy
   loop: "{{ nodes }}"
   when: nodes is defined
 
@@ -17,7 +17,7 @@
   until: instances.finished
   retries: "{{ instance_wait_retry_limit }}"
   delay: 10
-  loop: "{{ deploy.results }}"
+  loop: "{{ undeploy.results }}"
 
 - name: Delete virtual network inteface card
   azure_rm_networkinterface:
