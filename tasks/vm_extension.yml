@@ -76,3 +76,4 @@
       retries: "{{ instance_wait_retry_limit }}"
       delay: 10
       loop: "{{ vm_extension_failed.results | default([]) }}"
+      when: item.ansible_job_id is defined
