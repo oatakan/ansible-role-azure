@@ -88,7 +88,7 @@
     open_ports:
       - 3389
       - 1433
-      - "{{ ansible_port }}"
+      - "{{ ansible_port | default('22') }}"
     os_type: "{{ item.os_type }}"
     network_interfaces: ni_{{ azure_prefix }}{{ item.name }}
     admin_username: ansible
