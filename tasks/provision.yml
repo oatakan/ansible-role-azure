@@ -91,8 +91,8 @@
       - "{{ ansible_port | default('22') }}"
     os_type: "{{ item.os_type }}"
     network_interfaces: ni_{{ azure_prefix }}{{ item.name }}
-    admin_username: ansible
-    admin_password: "{{ ansible_password | b64encode | b64decode }}"
+    admin_username: "{{ item.user_name | default('ansible') }}"
+    admin_password: "{{ item.root_password | default(ansible_password) | b64encode | b64decode }}"
     image: "{{ item.image }}"
     remove_on_absent: all
     tags:
