@@ -20,7 +20,7 @@
       when:
         - instances.results is defined
         - nodes is defined
-        - item.item.item.os_type == 'Windows'
+        - item.item.item.os_type | default('Linux') == 'Windows'
 
     - name: Wait for vm extensions
       async_status: jid="{{ item.ansible_job_id }}"
