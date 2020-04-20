@@ -8,7 +8,7 @@
   async: 7200
   poll: 0
   register: deploy
-  with_items: "{{ nodes }}"
+  loop: "{{ nodes }}"
   when: nodes is defined
 
 - name: Wait for instance deletion to complete
@@ -17,14 +17,14 @@
   until: instances.finished
   retries: "{{ instance_wait_retry_limit }}"
   delay: 10
-  with_items: "{{ deploy.results }}"
+  loop: "{{ deploy.results }}"
 
 - name: Delete virtual network inteface card
   azure_rm_networkinterface:
     resource_group: "{{ azure_resource_group_name }}"
     name: "ni_{{ azure_prefix }}{{ item.name }}"
     state: absent
-  with_items: "{{ nodes }}"
+  loop: "{{ nodes }}"
   when: nodes is defined
 
 - name: Delete public IP address
@@ -32,7 +32,7 @@
     resource_group: "{{ azure_resource_group_name }}"
     name: "ip_{{ azure_prefix }}{{ item.name }}"
     state: absent
-  with_items: "{{ nodes }}"
+  loop: "{{ nodes }}"
   when: nodes is defined
 
 - name: Delete Network Security Group
