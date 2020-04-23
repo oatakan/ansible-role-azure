@@ -54,6 +54,14 @@
     name: "{{ azure_virtual_network_name }}"
     state: absent
 
+- name: Delete availability set
+  azure_rm_availabilityset:
+    name: "{{ azure_availability_set }}"
+    location: "{{ azure_location }}"
+    resource_group: "{{ azure_resource_group_name }}"
+    set: absent
+  when: use_availability_set|bool
+
 - name: Delete resource group
   azure_rm_resourcegroup:
     name: "{{ azure_resource_group_name }}"

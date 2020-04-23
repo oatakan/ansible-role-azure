@@ -10,6 +10,7 @@ azure_resource_group_name: rg_{{ azure_prefix }}
 azure_virtual_network_name: vn_{{ azure_prefix }}
 azure_subnet_name: sn_{{ azure_prefix }}
 azure_security_group_name: sg_{{ azure_prefix }}
+azure_availability_set: as_{{ azure_prefix }}
 
 azure_virtual_network_prefixes: "10.0.0.0/16"
 azure_subnet_prefixes: "10.0.1.0/24"
@@ -20,6 +21,8 @@ instance_wait_connection_timeout: 300
 pause_in_seconds: 60
 
 ansible_port: 22
+
+use_availability_set: no
 
 # Below is UTF-16 Base64 encoding for:
 #   Invoke-Expression -Command ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1')); Enable-WSManCredSSP -Role Server -Force

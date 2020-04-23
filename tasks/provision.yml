@@ -7,6 +7,13 @@
       environment: "{{ env | default('') }}"
   ignore_errors: yes
 
+- name: ensure availability set exists
+  azure_rm_availabilityset:
+    name: "{{ azure_availability_set }}"
+    location: "{{ azure_location }}"
+    resource_group: "{{ azure_resource_group_name }}"
+  when: use_availability_set|bool
+
 - name: Create virtual network
   azure_rm_virtualnetwork:
     resource_group: "{{ azure_resource_group_name }}"
@@ -82,6 +89,7 @@
   azure_rm_virtualmachine:
     resource_group: "{{ azure_resource_group_name }}"
     name: "vm-{{ azure_prefix | lower }}-{{ item.name | lower }}"
+    availability_set: "{{ azure_availability_set if (use_availability_set|bool) else omit }}"
     vm_size: "{{ item.vm_size }}"
     public_ip_allocation_method: Dynamic
     managed_disk_type: Standard_LRS
