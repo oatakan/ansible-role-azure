@@ -59,7 +59,7 @@
     name: "{{ azure_availability_set }}"
     location: "{{ azure_location }}"
     resource_group: "{{ azure_resource_group_name }}"
-    set: absent
+    state: absent
   when: use_availability_set|bool
 
 - name: Delete resource group
