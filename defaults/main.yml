@@ -5,7 +5,7 @@ role_action: provision
 env: test
 
 azure_prefix: DEMO
-azure_location: southcentralus
+azure_location: centralus
 azure_resource_group_name: rg_{{ azure_prefix }}
 azure_virtual_network_name: vn_{{ azure_prefix }}
 azure_subnet_name: sn_{{ azure_prefix }}
