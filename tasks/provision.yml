@@ -63,6 +63,12 @@
         access: Allow
         priority: 1005
         direction: Inbound
+      - name: HTTPS
+        protocol: Tcp
+        destination_port_range: 443
+        access: Allow
+        priority: 1006
+        direction: Inbound
 
 - name: Create public IP address
   azure_rm_publicipaddress:
