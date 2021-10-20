@@ -12,7 +12,8 @@
   when: nodes is defined
 
 - name: Wait for instance deletion to complete
-  async_status: jid="{{ item.ansible_job_id }}"
+  async_status:
+    jid: "{{ item.ansible_job_id }}"
   register: instances
   until: instances.finished
   retries: "{{ instance_wait_retry_limit }}"

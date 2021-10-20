@@ -23,7 +23,8 @@
         - item.item.item.os_type | default('Linux') == 'Windows'
 
     - name: Wait for vm extensions
-      async_status: jid="{{ item.ansible_job_id }}"
+      async_status:
+        jid: "{{ item.ansible_job_id }}"
       register: extensions
       until: extensions.finished
       retries: "{{ instance_wait_retry_limit }}"
@@ -70,7 +71,8 @@
         - item.failed
 
     - name: Wait for vm extensions (retry)
-      async_status: jid="{{ item.ansible_job_id }}"
+      async_status:
+        jid: "{{ item.ansible_job_id }}"
       register: extensions_retry
       until: extensions_retry.finished
       retries: "{{ instance_wait_retry_limit }}"

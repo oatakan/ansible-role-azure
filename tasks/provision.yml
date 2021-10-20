@@ -34,37 +34,37 @@
     name: "{{ azure_security_group_name }}"
     rules:
       - name: SSH
-        protocol: Tcp
+        protocol: TCP
         destination_port_range: 22
         access: Allow
         priority: 1001
         direction: Inbound
       - name: WINRM
-        protocol: Tcp
+        protocol: TCP
         destination_port_range: 5986
         access: Allow
         priority: 1002
         direction: Inbound
       - name: RDP
-        protocol: Tcp
+        protocol: TCP
         destination_port_range: 3389
         access: Allow
         priority: 1003
         direction: Inbound
       - name: MSSQL
-        protocol: Tcp
+        protocol: TCP
         destination_port_range: 1433
         access: Allow
         priority: 1004
         direction: Inbound
       - name: HTTP
-        protocol: Tcp
+        protocol: TCP
         destination_port_range: 80
         access: Allow
         priority: 1005
         direction: Inbound
       - name: HTTPS
-        protocol: Tcp
+        protocol: TCP
         destination_port_range: 443
         access: Allow
         priority: 1006
@@ -107,7 +107,7 @@
     os_type: "{{ item.os_type | default('Linux') }}"
     network_interfaces: ni_{{ azure_prefix }}{{ item.name }}
     admin_username: "{{ item.user_name | default('ansible') }}"
-    admin_password: "{{ item.root_password | default(ansible_password) | b64encode | b64decode }}"
+    admin_password: "{{ item.root_password | default(ansible_password) }}"
     image: "{{ item.image }}"
     remove_on_absent: all
     tags:
@@ -124,7 +124,8 @@
   when: nodes is defined
 
 - name: Wait for instance creation to complete
-  async_status: jid="{{ item.ansible_job_id }}"
+  async_status:
+    jid: "{{ item.ansible_job_id }}"
   register: instances
   until: instances.finished
   retries: "{{ instance_wait_retry_limit }}"
